@@ -1,8 +1,8 @@
 <?php
 include 'db.php';
 
-$sql = "SELECT * FROM produtos WHERE ativo = 1";
-$result = $conn->query($sql);
+$sql = "SELECT * FROM produtos WHERE ativo = 1"; // Consulta aos produtos
+$result = $conn->query($sql); // Executa a consulta
 ?>
 
 <!DOCTYPE html>
@@ -36,19 +36,27 @@ $result = $conn->query($sql);
         <h2>Produtos</h2>
         <div class="row">
             <?php
-            if ($result->num_rows > 0) {
+            if ($result->num_rows > 0) {  // Verifica se há produtos no banco de dados
                 while($row = $result->fetch_assoc()) {
+                    // Exibe as informações de cada produto, incluindo a imagem
                     echo '<div class="col-md-4">';
                     echo '<div class="card">';
-                    echo '<img src="' . $row["url_img"] . '" class="card-img-top" alt="' . $row["nome"] . '">';
+                    
+                    // Aqui está a parte da imagem, com o link da Coca-Cola 2L
+                    echo '<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQizlR_Cl2i7RTwc7aa--JE3hUfeKorkjzQaw&s" 
+                             class="card-img-top" 
+                             alt="' . htmlspecialchars($row["nome"]) . '" 
+                             style="width: 100%; height: 300px; object-fit: contain;">';
+                    
                     echo '<div class="card-body">';
-                    echo '<h5 class="card-title">' . $row["nome"] . '</h5>';
-                    echo '<p class="card-text">' . $row["descricao"] . '</p>';
-                    echo '<p class="card-text"><strong>Marca:</strong> ' . $row["marca"] . '</p>';
-                    echo '<p class="card-text"><strong>Modelo:</strong> ' . $row["modelo"] . '</p>';
-                    echo '<p class="card-text"><strong>Valor:</strong> R$ ' . $row["valorunitario"] . '</p>';
-                    echo '<p class="card-text"><strong>Categoria:</strong> ' . $row["categoria"] . '</p>';
-                    echo '<a href="#" class="btn btn-primary">Comprar</a>';
+                    echo '<h5 class="card-title">' . htmlspecialchars($row["nome"]) . '</h5>';
+                    echo '<p class="card-text">' . htmlspecialchars($row["descricao"]) . '</p>';
+                    echo '<p class="card-text"><strong>Marca:</strong> ' . htmlspecialchars($row["marca"]) . '</p>';
+                    echo '<p class="card-text"><strong>Modelo:</strong> ' . htmlspecialchars($row["modelo"]) . '</p>';
+                    echo '<p class="card-text"><strong>Valor:</strong> R$ ' . number_format($row["valorunitario"], 2, ',', '.') . '</p>';
+                    echo '<p class="card-text"><strong>Categoria:</strong> ' . htmlspecialchars($row["categoria"]) . '</p>';
+                    // Botão Adicionar ao Carrinho
+                    echo '<a href="adicionar_ao_carrinho.php?id=' . $row['id'] . '" class="btn btn-primary">Adicionar ao Carrinho</a>';
                     echo '</div>';
                     echo '</div>';
                     echo '</div>';

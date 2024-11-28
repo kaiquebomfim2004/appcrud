@@ -1,3 +1,10 @@
+<?php
+// Verifica se já existe uma sessão ativa
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -21,8 +28,15 @@
             <a class="navbar-brand" href="produtos.php">Produtos</a>
             <div class="ml-auto">
                 <a class="navbar-brand" href="logout.php">Logout</a>
+                <!-- Ícone de Carrinho -->
+                <a href="shopcart.php" class="navbar-brand">
+                    <i class="fas fa-shopping-cart"></i> Carrinho
+                    <?php
+                    // Exibe o número de itens no carrinho
+                    $carrinhoCount = isset($_SESSION['carrinho']) ? count($_SESSION['carrinho']) : 0;
+                    echo "($carrinhoCount)";
+                    ?>
+                </a>
             </div>
         </div>
     </nav>
-</body>
-</html>

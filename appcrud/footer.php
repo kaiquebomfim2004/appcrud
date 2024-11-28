@@ -1,6 +1,6 @@
 <!-- footer.php -->
 <footer class="bg-dark text-white text-center p-3 mt-auto">
-    <p>&copy; <?php echo date("Y"); ?> Sistema de Cadastro - Todos os direitos reservados.</p>
+    <p>&copy; <?php echo date("Y"); ?> </p>
 </footer>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
