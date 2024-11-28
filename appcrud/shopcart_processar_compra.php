@@ -1,29 +1,42 @@
 <?php
 session_start();
-include 'db.php';  // Inclua a conexão com o banco de dados
 
-// Verificar se o carrinho não está vazio
-if (empty($_SESSION['carrinho'])) {
-    header('Location: shopcart_erro_compra.php');
+// Verifica se o carrinho está vazio
+if (!isset($_SESSION['carrinho']) || count($_SESSION['carrinho']) === 0) {
+    header("Location: shopcart.php");
     exit();
 }
 
-// Simula o processamento da compra
-$usuario_id = $_SESSION['usuario_id'];  // Supondo que você tenha um usuário logado
-$total = 0;
-
-foreach ($_SESSION['carrinho'] as $id_produto => $quantidade) {
-    $sql = "SELECT valorunitario FROM produtos WHERE id = $id_produto";
-    $result = $conn->query($sql);
-    $produto = $result->fetch_assoc();
-    
-    $total += $produto['valorunitario'] * $quantidade;
+// Verifica se o usuário está logado
+if (!isset($_SESSION['email'])) {
+    header("Location: login.php");
+    exit();
 }
 
-// Insere a compra no banco de dados (estoque, pedidos, etc.)
-// Aqui você pode adicionar um código para registrar o pedido no banco, descontar o estoque, etc.
+// Aqui você pode implementar lógica para salvar o pedido no banco de dados, se necessário.
+// Exemplo:
+include 'db.php';
 
-// Se o processo for bem-sucedido, redireciona para a página de sucesso
-header('Location: shopcart_sucesso_compra.php');
+$email_usuario = $_SESSION['email'];
+$total_pedido = 0;
+
+// Itera sobre os itens do carrinho para salvar os dados
+foreach ($_SESSION['carrinho'] as $id_produto => $item) {
+    $nome_produto = $item['nome'];
+    $quantidade = $item['quantidade'];
+    $preco = $item['preco'];
+    $subtotal = $quantidade * $preco;
+    $total_pedido += $subtotal;
+
+    // Insere cada item do pedido no banco de dados
+    $query = "INSERT INTO pedidos (email_usuario, id_produto, nome_produto, quantidade, preco_unitario, subtotal, data_pedido)
+              VALUES ('$email_usuario', $id_produto, '$nome_produto', $quantidade, $preco, $subtotal, NOW())";
+    $conn->query($query);
+}
+
+// Define uma flag indicando que o pedido foi processado
+$_SESSION['carrinho_finalizado'] = true;
+
+// Redireciona para a página de sucesso
+header("Location: shopcart_sucesso_compra.php");
 exit();
-?>
